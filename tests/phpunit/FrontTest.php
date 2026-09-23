@@ -103,6 +103,29 @@ class FrontTest extends TestCase {
 	}
 
 	/**
+	 * 期限切れを取り除くスクリプトは、お知らせと一緒に自分のタグも消すこと。
+	 *
+	 * Lightning の固定ヘッダーは「ヘッダーのすぐ次の要素」に上余白を付ける。お知らせだけを消すと
+	 * 次の要素がこのスクリプトのタグになり、スライダーが固定ヘッダーの裏に潜る（本番 bonshushu.com で確認）。
+	 *
+	 * @return void
+	 */
+	public function test_expiry_script_removes_its_own_tag() {
+		$method = new ReflectionMethod( 'ETNB_Front', 'print_expiry_script' );
+		// PHP 8.1 未満だけ必要（8.1 以降は常に呼べて、8.5 では呼ぶと非推奨の警告が出る）。
+		if ( PHP_VERSION_ID < 80100 ) {
+			$method->setAccessible( true );
+		}
+
+		ob_start();
+		$method->invoke( null );
+		$html = ob_get_clean();
+
+		$this->assertStringContainsString( 'document.currentScript', $html, '自分のタグを取得している' );
+		$this->assertStringContainsString( 's.parentNode.removeChild(s)', $html, '自分のタグを消している' );
+	}
+
+	/**
 	 * 上余白のフィルターは、数値＋単位の形だけを通すこと（style 属性に任意の文字列を入れさせない）。
 	 *
 	 * @return void

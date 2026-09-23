@@ -175,10 +175,16 @@ class ETNB_Front {
 	 *
 	 * お知らせの直後に置くので、画面に描かれる前に取り除ける（ちらつかない）。
 	 *
+	 * ★ 取り除くときは、このスクリプトのタグ自身も消す。
+	 *   Lightning の固定ヘッダー（body.headfix）は、読み込み完了時に「ヘッダーのすぐ次の要素」へ
+	 *   ヘッダーの高さぶんの上余白を付ける（lightning/js/_header_fixed.js の offset_header()）。
+	 *   お知らせだけを消すと、次の要素がこのスクリプトのタグになり、上余白がそこに付いて効かず、
+	 *   スライダーが固定ヘッダーの裏に潜る。タグも消せば、次の要素は本来どおりスライダーになる。
+	 *
 	 * @return void
 	 */
 	private static function print_expiry_script() {
-		$js = '(function(){var e=document.getElementById("etnb-notice");if(!e){return;}var t=parseInt(e.getAttribute("data-etnb-end"),10);if(t&&Date.now()>=t){e.parentNode.removeChild(e);}})();';
+		$js = '(function(){var s=document.currentScript,e=document.getElementById("etnb-notice");if(!e){return;}var t=parseInt(e.getAttribute("data-etnb-end"),10);if(t&&Date.now()>=t){e.parentNode.removeChild(e);if(s&&s.parentNode){s.parentNode.removeChild(s);}}})();';
 
 		// WordPress 5.7 以降は、CSP の nonce 等を付けられる本体の関数で出す。
 		if ( function_exists( 'wp_print_inline_script_tag' ) ) {
