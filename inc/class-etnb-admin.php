@@ -203,10 +203,11 @@ class ETNB_Admin {
 			/**
 			 * 画面の下に出す、反映の遅れについての注意書き。
 			 * サイトのキャッシュの有効時間を実測したら、その値を入れた文に差し替える。
+			 * 差し替えるコードはサイトごとの mu-plugin に置く（テーマに置くと、テーマの作り直しで黙って消える）。
 			 *
 			 * @param string $note 注意書き（プレーンテキスト）。
 			 */
-			$cache_note = apply_filters( 'etnb_cache_note', __( 'サイトのキャッシュにより、保存してからトップページに反映されるまで数分かかることがあります。', 'etbs-notice-banner' ) );
+			$cache_note = apply_filters( 'etnb_cache_note', __( 'サイトのキャッシュにより、保存した内容や掲載開始日の表示がトップページに反映されるまで、数分かかることがあります。', 'etbs-notice-banner' ) );
 			?>
 			<p class="description"><?php echo esc_html( $cache_note ); ?></p>
 		</div>

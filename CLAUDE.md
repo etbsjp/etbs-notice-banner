@@ -30,6 +30,13 @@ etbs が配布する WordPress プラグイン。共通ルールの正本は `~/
 ★ bonshushu.com は task-queue #61（Lightning G3 化）の対象。G3 化のときは差し込み口の有無と位置を確認し、
 変わっていれば `etnb_output_hook` フィルターで差し替える。
 
+★★ **サイト固有の設定（`etnb_cache_note` の実測値入りの文・`etnb_output_hook` の差し替えなど）は、
+そのサイトの mu-plugin（bonshushu.com では `wp-content/mu-plugins/etnb-bonshushu.php`）に置く。**
+子テーマに置くと、#61 の子テーマ作り直しで**エラーも出ずに既定値へ戻る**（2026-09-23 大の監査）。
+
+★ ブラウザ側の掲載終了判定は、終了日を過去にして保存しても試せない（次に作られるページには最初から出ない）。
+終了日を当日にして保存し、キャッシュに載ったページで `Date.now` を翌日0時以降にずらしてスクリプトを再実行して確かめる。
+
 ## 検証環境
 
 Local の `ai-wp-demo`（`aiwpdemo.etbs.lc`）。**シンボリックリンク設置でよい**
@@ -64,6 +71,8 @@ Local の `ai-wp-demo`（`aiwpdemo.etbs.lc`）。**シンボリックリンク�
 
 版数は**ヘッダの `Version:` 1箇所のみ**。CSS のキャッシュバスターは `get_file_data()` でヘッダから読むので、別に書かない。
 `readme.txt` は無く `README.md` のみなので、PUC は本体ヘッダを読む。
+★ その代わり PUC の「詳細を表示」は空で、`== Upgrade Notice ==` も使えない。配布先が弊社管理のサイトだけのうちは実害が無い。
+**第三者へ配るようになったら readme.txt を足す**（そのときは `Requires` 系を readme に書かない罠に注意）。
 
 ## CI
 
