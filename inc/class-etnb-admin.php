@@ -97,6 +97,9 @@ class ETNB_Admin {
 		if ( is_array( $form ) && isset( $form['notice'], $form['errors'] ) ) {
 			$notice = array_merge( $notice, (array) $form['notice'] );
 			$errors = (array) $form['errors'];
+			if ( isset( $form['layout'] ) && is_array( $form['layout'] ) ) {
+				$layout = ETNB_Options::sanitize_layout( $form['layout'] );
+			}
 			delete_transient( $transient_key );
 		}
 
@@ -104,7 +107,7 @@ class ETNB_Admin {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- 表示の出し分けだけで、何も書き換えない。
 		$saved = isset( $_GET['etnb_saved'] ) && '1' === $_GET['etnb_saved'];
 
-		$timezone = ETNB_Schedule::site_timezone( get_option( 'timezone_string' ), get_option( 'gmt_offset' ) );
+		$timezone = ETNB_Options::site_timezone();
 		$status   = ETNB_Schedule::status( ETNB_Options::get_notice(), time(), $timezone );
 		?>
 		<div class="wrap">
@@ -116,7 +119,7 @@ class ETNB_Admin {
 
 			<?php if ( ! empty( $errors ) ) : ?>
 				<div class="notice notice-error">
-					<p><?php esc_html_e( '保存していません。次の点を直してから、もう一度保存してください。', 'etbs-notice-banner' ); ?></p>
+					<p><?php esc_html_e( '保存していません（出し方も含めて、何も保存していません）。次の点を直してから、もう一度保存してください。', 'etbs-notice-banner' ); ?></p>
 					<ul>
 						<?php foreach ( $errors as $error ) : ?>
 							<li><?php echo esc_html( $error ); ?></li>
@@ -237,6 +240,10 @@ class ETNB_Admin {
 				self::FORM_TRANSIENT . get_current_user_id(),
 				array(
 					'notice' => $notice,
+					// 管理者が出し方も変えていた場合に、画面で選び直さずに済むよう一緒に戻す（保存はしない）。
+					'layout' => ( current_user_can( self::CAP_LAYOUT ) && isset( $_POST['etnb_layout'] ) && is_array( $_POST['etnb_layout'] ) )
+						? ETNB_Options::sanitize_layout( wp_unslash( $_POST['etnb_layout'] ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_layout() で許可値だけにする。
+						: null,
 					'errors' => $errors,
 				),
 				5 * MINUTE_IN_SECONDS

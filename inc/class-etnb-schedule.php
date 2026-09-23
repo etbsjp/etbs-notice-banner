@@ -50,7 +50,7 @@ class ETNB_Schedule {
 	 */
 	public static function is_valid_date( $date ) {
 		// 形式（4桁-2桁-2桁）を確かめる。
-		if ( ! is_string( $date ) || ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $date, $m ) ) {
+		if ( ! is_string( $date ) || ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})\z/', $date, $m ) ) {
 			return false;
 		}
 
@@ -138,8 +138,9 @@ class ETNB_Schedule {
 	 */
 	public static function status( array $notice, $now, DateTimeZone $timezone ) {
 		// 本文が空なら、見出しが入っていても表示しない（見出しだけでは何のお知らせか分からないため）。
-		$body = isset( $notice['body'] ) ? trim( (string) $notice['body'] ) : '';
-		if ( '' === $body ) {
+		// 全角スペース（U+3000）や改行だけの本文も空とみなす（PHP の trim() は全角スペースを取り除かない）。
+		$body = isset( $notice['body'] ) ? (string) $notice['body'] : '';
+		if ( '' === preg_replace( '/\A[\s\x{3000}]+|[\s\x{3000}]+\z/u', '', $body ) ) {
 			return self::STATUS_EMPTY;
 		}
 

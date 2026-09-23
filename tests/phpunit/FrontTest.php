@@ -85,7 +85,7 @@ class FrontTest extends TestCase {
 	 * @return void
 	 */
 	public function test_empty_heading_is_omitted() {
-		$html = ETNB_Front::markup( $this->notice( array( 'heading' => '  ' ) ), $this->layout() );
+		$html = ETNB_Front::markup( $this->notice( array( 'heading' => " \u{3000} " ) ), $this->layout() );
 
 		$this->assertStringNotContainsString( 'etnb__heading', $html );
 	}
@@ -110,6 +110,9 @@ class FrontTest extends TestCase {
 	public function test_overlay_top_filter_is_validated() {
 		etnb_test_set_filter( 'etnb_overlay_top', '1.5rem' );
 		$this->assertStringContainsString( 'style="--etnb-overlay-top:1.5rem"', ETNB_Front::markup( $this->notice(), $this->layout() ), '正しい値 => 通す' );
+
+		etnb_test_set_filter( 'etnb_overlay_top', "12px\n" );
+		$this->assertStringContainsString( 'style="--etnb-overlay-top:8px"', ETNB_Front::markup( $this->notice(), $this->layout() ), '末尾に改行 => 既定値' );
 
 		etnb_test_set_filter( 'etnb_overlay_top', '8px;background:url(x)' );
 		$this->assertStringContainsString( 'style="--etnb-overlay-top:8px"', ETNB_Front::markup( $this->notice(), $this->layout() ), '不正な値 => 既定値' );

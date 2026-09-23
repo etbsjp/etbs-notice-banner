@@ -65,7 +65,7 @@ class ETNB_Front {
 
 		// トップページだけに出す。
 		if ( is_front_page() ) {
-			$timezone = ETNB_Schedule::site_timezone( get_option( 'timezone_string' ), get_option( 'gmt_offset' ) );
+			$timezone = ETNB_Options::site_timezone();
 			$display  = ( ETNB_Schedule::STATUS_ACTIVE === ETNB_Schedule::status( ETNB_Options::get_notice(), time(), $timezone ) );
 		}
 
@@ -112,7 +112,7 @@ class ETNB_Front {
 		echo self::markup( $notice, ETNB_Options::get_layout() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup() の中で1値ずつエスケープ済み。
 
 		// 掲載終了時刻が決まっていれば、ブラウザ側でも終了を判定する。
-		$timezone = ETNB_Schedule::site_timezone( get_option( 'timezone_string' ), get_option( 'gmt_offset' ) );
+		$timezone = ETNB_Options::site_timezone();
 		if ( null !== ETNB_Schedule::end_timestamp( $notice['end'], $timezone ) ) {
 			self::print_expiry_script();
 		}
@@ -126,7 +126,7 @@ class ETNB_Front {
 	 * @return string エスケープ済みの HTML。
 	 */
 	public static function markup( array $notice, array $layout ) {
-		$timezone = ETNB_Schedule::site_timezone( get_option( 'timezone_string' ), get_option( 'gmt_offset' ) );
+		$timezone = ETNB_Options::site_timezone();
 		$end      = ETNB_Schedule::end_timestamp( $notice['end'], $timezone );
 
 		// 出し方をクラス名にする（例: etnb--pc-overlay etnb--sp-band）。値は sanitize_layout() で2値に絞ってある。
@@ -143,7 +143,7 @@ class ETNB_Front {
 		 */
 		$top = (string) apply_filters( 'etnb_overlay_top', self::DEFAULT_OVERLAY_TOP );
 		// 数値＋単位の形だけを通す（style 属性に任意の文字列を入れさせない）。
-		if ( ! preg_match( '/^\d+(\.\d+)?(px|rem|em|vw|vh|%)$/', $top ) ) {
+		if ( ! preg_match( '/^\d+(\.\d+)?(px|rem|em|vw|vh|%)\z/', $top ) ) {
 			$top = self::DEFAULT_OVERLAY_TOP;
 		}
 
@@ -158,7 +158,7 @@ class ETNB_Front {
 		$html .= '<div class="etnb__box" role="region" aria-label="' . esc_attr__( 'お知らせ', 'etbs-notice-banner' ) . '">';
 
 		// 見出しは空なら出さない。
-		if ( '' !== trim( $notice['heading'] ) ) {
+		if ( ! ETNB_Options::is_blank( $notice['heading'] ) ) {
 			$html .= '<p class="etnb__heading">' . esc_html( $notice['heading'] ) . '</p>';
 		}
 

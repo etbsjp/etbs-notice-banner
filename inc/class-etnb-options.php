@@ -88,6 +88,29 @@ class ETNB_Options {
 	}
 
 	/**
+	 * サイトのタイムゾーン（設定 → 一般）を返す。
+	 *
+	 * タイムゾーンの取り方をここ1か所にまとめる（ETNB_Schedule は WordPress に依存させないため、そちらには置かない）。
+	 *
+	 * @return DateTimeZone サイトのタイムゾーン。
+	 */
+	public static function site_timezone() {
+		return ETNB_Schedule::site_timezone( get_option( 'timezone_string' ), get_option( 'gmt_offset' ) );
+	}
+
+	/**
+	 * 本文・見出しが「空」かを判定する。全角スペース（U+3000）や改行だけのものも空とみなす。
+	 *
+	 * PHP の trim() は全角スペースを取り除かないため、施設様が全角スペースだけを入れると空の箱が出てしまう。
+	 *
+	 * @param string $text 判定する文字列。
+	 * @return bool 空なら true。
+	 */
+	public static function is_blank( $text ) {
+		return '' === preg_replace( '/\A[\s\x{3000}]+|[\s\x{3000}]+\z/u', '', (string) $text );
+	}
+
+	/**
 	 * 入力されたお知らせを検査し、保存する値とエラーを返す。
 	 *
 	 * エラーがあるときは保存しない前提で、入力値（整えたもの）も返す（画面に入力を残すため）。

@@ -50,6 +50,11 @@ class ScheduleTest extends TestCase {
 				'expected'            => false,
 			),
 			array(
+				'test_condition_name' => '末尾に改行 => false（$ ではなく \\z で終端を見る）',
+				'input'               => "2026-10-07\n",
+				'expected'            => false,
+			),
+			array(
 				'test_condition_name' => '空文字 => false',
 				'input'               => '',
 				'expected'            => false,
@@ -174,6 +179,12 @@ class ScheduleTest extends TestCase {
 			array(
 				'test_condition_name' => '本文が空白だけ => 空（期間内でも出さない）',
 				'notice'              => array_merge( $notice, array( 'body' => " \n " ) ),
+				'now'                 => $start,
+				'expected'            => ETNB_Schedule::STATUS_EMPTY,
+			),
+			array(
+				'test_condition_name' => '本文が全角スペースだけ => 空（trim() では取り除けない）',
+				'notice'              => array_merge( $notice, array( 'body' => "\u{3000}\u{3000}" ) ),
 				'now'                 => $start,
 				'expected'            => ETNB_Schedule::STATUS_EMPTY,
 			),

@@ -45,6 +45,7 @@ Local の `ai-wp-demo`（`aiwpdemo.etbs.lc`）。**シンボリックリンク�
 `composer install` のあと `vendor/bin/phpunit`。WordPress のテストスイートは使わず、
 `tests/phpunit/bootstrap.php` で必要な関数だけをスタブにして、掲載期間の判定・入力値の検査・HTML の組み立てを確かめる。
 管理画面の保存（権限・nonce・入力エラー時の戻し）と表示は検証サイトで確かめて PR に記録する。
+★ **CI は PHPUnit を走らせない**（`ci.yml` は原本と byte 一致で運用する決まりのため）。PHPUnit は手元で実行し、結果を PR に貼る。
 
 ## アンインストール
 
