@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: ETBS Notice Banner
- * Version: 1.0.0
+ * Version: 1.0.1
  * Description: トップページのヘッダー直下（スライダーの上）に、休業日などのお知らせを表示します。見出し・本文・掲載期間は管理画面の「お知らせバナー」から編集者も書き換えられます。
  * Author: ETBS (DAI)
  * Author URI: https://etbs.jp
