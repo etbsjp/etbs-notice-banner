@@ -1,0 +1,78 @@
+/* ==========================================================================
+   お知らせバナー（etbs-notice-banner）
+   ========================================================================== */
+
+/* 箱の見た目（出し方に関係なく共通）
+   ========================================================================== */
+.etnb__box {
+	box-sizing: border-box;
+	padding: 0.5em 1.5em;
+	background: rgba(255, 255, 255, 0.85);
+	color: #d7000f;
+	font-weight: 700;
+	line-height: 1.6;
+	text-align: center;
+}
+
+.etnb__heading,
+.etnb__body {
+	margin: 0;
+	padding: 0;
+}
+
+/* 帯：高さを持った要素として置き、直後の要素を押し下げる
+   ========================================================================== */
+.etnb--sp-band .etnb__box {
+	width: 100%;
+}
+
+/* 重ねる：高さ0の置き場から、箱を下へはみ出させる
+   ========================================================================== */
+.etnb--sp-overlay {
+	position: relative;
+	z-index: 20;
+	height: 0;
+}
+
+.etnb--sp-overlay .etnb__box {
+	position: absolute;
+	top: var(--etnb-overlay-top, 8px);
+	left: 50%;
+	width: max-content;
+	max-width: 92%;
+	transform: translateX(-50%);
+}
+
+/* PC（768px 以上）は PC の出し方で上書きする
+   ========================================================================== */
+@media (min-width: 768px) {
+
+	/* 帯 */
+	.etnb--pc-band {
+		position: static;
+		height: auto;
+	}
+
+	.etnb--pc-band .etnb__box {
+		position: static;
+		width: 100%;
+		max-width: none;
+		transform: none;
+	}
+
+	/* 重ねる */
+	.etnb--pc-overlay {
+		position: relative;
+		z-index: 20;
+		height: 0;
+	}
+
+	.etnb--pc-overlay .etnb__box {
+		position: absolute;
+		top: var(--etnb-overlay-top, 8px);
+		left: 50%;
+		width: max-content;
+		max-width: 92%;
+		transform: translateX(-50%);
+	}
+}
